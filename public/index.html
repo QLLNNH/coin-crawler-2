@@ -78,9 +78,7 @@
 
         socket.emit('kline', interval);
 
-        socket.on('change', (_interval) => {
-            if (_interval === interval) socket.emit('kline', interval);
-        });
+        socket.on('change', () => socket.emit('kline', interval));
 
         socket.on('kline', (rows) => {
             console.log('kline event');
