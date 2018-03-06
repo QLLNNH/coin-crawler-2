@@ -6,7 +6,7 @@
     <title>My Coin</title>
     <style type="text/css">
         #outer {
-            width: 1000px;
+            width: 500px;
             height: 100%;
             margin: 0 auto;
         }
@@ -38,10 +38,10 @@
         }
 
         select {
-            width: 70%;
+            width: 90%;
             margin: 0px auto;
             display: block;
-            padding: 5px;
+            padding: 5px -1px 5px 0px;
         }
 
     </style>
@@ -53,6 +53,7 @@
             <th id="interval">
                 <select id="select">
                     <option selected="selected" value="5">5min</option>
+                    <option value="10">10min</option>
                     <option value="15">15min</option>
                     <option value="30">30min</option>
                 </select>
@@ -81,9 +82,7 @@
         socket.on('change', () => socket.emit('kline', interval));
 
         socket.on('kline', (rows) => {
-            console.log('kline event');
-
-            if (Array.isArray(rows)) {
+            if (Array.isArray(rows) && rows.length) {
                 $('#symbols .symbol').remove();
                 rows.forEach((row) => {
                     $('#symbols').append(`<tr class="symbol"><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td></tr>`)
