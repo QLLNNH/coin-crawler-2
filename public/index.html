@@ -44,10 +44,19 @@
             padding: 5px -1px 5px 0px;
         }
 
+        #online {
+            display: inline-block;
+        }
+
+        #online_amount {
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
 <div id="outer">
+    <div id="online">在线人数：</div>
+    <div id="online_amount"></div>
     <table id="symbols">
         <tr id="platform">
             <th id="interval">
@@ -92,6 +101,8 @@
                 alert('服务器刚启动，加载完毕后页面会刷新');
             }
         });
+
+        socket.on('online', (amount) => $("#online_amount").text(amount));
 
         $("#select").change(function () {
             interval = parseInt($(this).val());
