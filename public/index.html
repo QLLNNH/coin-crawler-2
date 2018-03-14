@@ -86,7 +86,7 @@
 
         const socket = io();
 
-        socket.emit('kline', interval);
+        // socket.emit('kline', interval);
 
         socket.on('change', () => socket.emit('kline', interval));
 
@@ -103,6 +103,10 @@
         });
 
         socket.on('online', (amount) => $("#online_amount").text(amount));
+
+        socket.on('zb_kline', (zb_kline) => {
+            console.log(zb_kline);
+        });
 
         $("#select").change(function () {
             interval = parseInt($(this).val());
