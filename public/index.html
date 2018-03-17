@@ -6,7 +6,7 @@
     <title>My Coin</title>
     <style type="text/css">
         #outer {
-            width: 600px;
+            width: 700px;
             height: 100%;
             margin: 0 auto;
         }
@@ -24,12 +24,16 @@
         }
 
         #symbols th {
-            width: 16%;
+            width: 14%;
             font-size: 1.1em;
             text-align: left;
             background-color: #A7C942;
             color: #ffffff;
             text-align: center;
+        }
+
+        #symbols #ts {
+            width: 30%;
         }
 
         #symbols td {
@@ -71,7 +75,7 @@
             <th id="">BTC</th>
             <th id="">USDT</th>
             <th id="">总额</th>
-            <th id="">时间</th>
+            <th id="ts">时间</th>
         </tr>
     </table>
 </div>
@@ -109,12 +113,7 @@
             const rank_new = sequence.insert(target);
             rank.set_ranking(symbol, rank_new);
             sequence.fetch_next(rank_new).forEach((symbol) => rank.increase(symbol));
-
-            let ts = Math.floor((Date.now() - target[5]) / 1000);
-            if (ts < 600) ts = `${ts}s`;
-            else if (ts < 3600) ts = `${(ts / 60).toFixed(1)}m`;
-            else ts = `${(ts / 3600).toFixed(1)}h`;
-            $(`#symbols tr`).eq(rank_new).after(`<tr class="symbol ${symbol}"><td>${target[0]}</td><td>${target[1]}</td><td>${target[2]}</td><td>${target[3]}</td><td>${target[4]}</td><td>${ts}</td></tr>`);
+            $(`#symbols tr`).eq(rank_new).after(`<tr class="symbol ${symbol}"><td>${target[0]}</td><td>${target[1]}</td><td>${target[2]}</td><td>${target[3]}</td><td>${target[4]}</td><td>${new Date(target[5]).toLocaleString()}</td></tr>`);
         });
 
         const rank = function () {
