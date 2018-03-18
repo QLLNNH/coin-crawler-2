@@ -110,9 +110,9 @@
         });
 
         socket.on('load_cache', (rows) => {
-            sequence.init(rows);
             const cache = {};
             $('#symbols .symbol').remove();
+            sequence.init(rows);
             rows.forEach((row, index) => {
                 cache[row[0]] = index;
                 $('#symbols').append(`<tr class="symbol ${row[0]}"><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td>${new Date(row[5]).toLocaleString()}</td></tr>`)
@@ -178,6 +178,7 @@
         }();
 
         let interval = '05';
+        socket.emit('load_cache', interval);
 
         $("#select").change(function () {
             interval = $(this).val();
