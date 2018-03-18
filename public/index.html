@@ -87,14 +87,7 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
     $(document).ready(() => {
-        let interval = '05';
-
         const socket = io();
-
-        $("#select").change(function () {
-            interval = $(this).val();
-            socket.emit('kline', interval);
-        });
 
         socket.on('online', (amount) => $("#online_amount").text(amount));
 
@@ -116,10 +109,22 @@
             $(`#symbols tr`).eq(rank_new).after(`<tr class="symbol ${symbol}"><td>${target[0]}</td><td>${target[1]}</td><td>${target[2]}</td><td>${target[3]}</td><td>${target[4]}</td><td>${new Date(target[5]).toLocaleString()}</td></tr>`);
         });
 
-        const rank = function () {
+        socket.on('load_cache', (rows) => {
+            sequence.init(rows);
             const cache = {};
+            $('#symbols .symbol').remove();
+            rows.forEach((row, index) => {
+                cache[row[0]] = index;
+                $('#symbols').append(`<tr class="symbol ${row[0]}"><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td>${new Date(row[5]).toLocaleString()}</td></tr>`)
+            });
+            rank.init(cache);
+        });
+
+        const rank = function () {
+            let cache = {};
             return {
-                fetch: () => cache
+                init: (_cache) => cache = _cache
+                , fetch: () => cache
                 , increase: (symbol) => cache[symbol] ++
                 , decrease: (symbol) => cache[symbol] --
                 , del_ranking: (symbol) => delete cache[symbol]
@@ -129,7 +134,7 @@
         }();
 
         const sequence = function () {
-            const cache = [];
+            let cache = [];
             const bs = (target, h, e) => {
                 if (e === - 1) {
                     cache.push(target);
@@ -164,11 +169,19 @@
                 }
             }
             return {
-                fetch: () => cache
+                init: (_cache) => cache = _cache
+                , fetch: () => cache
                 , delete: (start) => cache.splice(start, 1)
                 , insert: (target) => bs(target, 0, cache.length - 1)
                 , fetch_next: (start) => cache.slice(start + 1).map((item) => item[0])
             }
         }();
+
+        let interval = '05';
+
+        $("#select").change(function () {
+            interval = $(this).val();
+            socket.emit('load_cache', interval);
+        });
     });
 </script>
