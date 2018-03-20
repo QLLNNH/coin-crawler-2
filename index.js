@@ -2,8 +2,7 @@
 const log = require('./lib/log');
 const app = require('express')();
 const http = require('http').Server(app);
-const socket_server = require('socket.io')(http);
-const aggregator = new (require('./lib/aggregator'))(socket_server);
+const aggregator = new (require('./lib/aggregator'))(require('socket.io')(http));
 
 app.get('/coin', (req, res) => res.sendFile(__dirname + '/public/index.html'));
 

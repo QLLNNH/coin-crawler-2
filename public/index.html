@@ -91,9 +91,9 @@
 
         socket.on('online', (amount) => $("#online_amount").text(amount));
 
-        socket.on('zb_kline', (zb_kline) => {
-            const symbol = zb_kline.symbol;
-            const target = zb_kline[interval];
+        socket.on('kline', (kline) => {
+            const symbol = kline.symbol;
+            const target = kline[interval];
             const rank_old = rank.get_ranking(symbol);
 
             if (rank_old !== undefined) {
