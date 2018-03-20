@@ -6,7 +6,7 @@
     <title>My Coin</title>
     <style type="text/css">
         #outer {
-            width: 700px;
+            width: 600px;
             height: 100%;
             margin: 0 auto;
         }
@@ -24,7 +24,7 @@
         }
 
         #symbols th {
-            width: 14%;
+            width: 16%;
             font-size: 1.1em;
             text-align: left;
             background-color: #A7C942;
@@ -33,7 +33,7 @@
         }
 
         #symbols #ts {
-            width: 30%;
+            width: 20%;
         }
 
         #symbols td {
@@ -87,6 +87,7 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
     $(document).ready(() => {
+        const zone = new Date().getTimezoneOffset() * 60 * 1000;
         const socket = io();
 
         socket.on('online', (amount) => $("#online_amount").text(amount));
@@ -95,6 +96,7 @@
             const symbol = kline.symbol;
             const target = kline[interval];
             const rank_old = rank.get_ranking(symbol);
+            const display_date = new Date(target[5] - zone).toISOString().substring(11, 19);
 
             if (rank_old !== undefined) {
                 sequence.fetch_next(rank_old).forEach((symbol) => rank.decrease(symbol));
@@ -106,7 +108,7 @@
             const rank_new = sequence.insert(target);
             rank.set_ranking(symbol, rank_new);
             sequence.fetch_next(rank_new).forEach((symbol) => rank.increase(symbol));
-            $(`#symbols tr`).eq(rank_new).after(`<tr class="symbol ${symbol}"><td>${target[0]}</td><td>${target[1]}</td><td>${target[2]}</td><td>${target[3]}</td><td>${target[4]}</td><td>${new Date(target[5]).toLocaleString()}</td></tr>`);
+            $(`#symbols tr`).eq(rank_new).after(`<tr class="symbol ${symbol}"><td>${target[0]}</td><td>${target[1]}</td><td>${target[2]}</td><td>${target[3]}</td><td>${target[4]}</td><td>${display_date}</td></tr>`);
         });
 
         socket.on('load_cache', (rows) => {
@@ -115,7 +117,8 @@
             sequence.init(rows);
             rows.forEach((row, index) => {
                 cache[row[0]] = index;
-                $('#symbols').append(`<tr class="symbol ${row[0]}"><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td>${new Date(row[5]).toLocaleString()}</td></tr>`)
+                const display_date = new Date(row[5] - zone).toISOString().substring(11, 19);
+                $('#symbols').append(`<tr class="symbol ${row[0]}"><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td>${display_date}</td></tr>`)
             });
             rank.init(cache);
         });
