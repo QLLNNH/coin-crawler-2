@@ -6,4 +6,4 @@ const aggregator = new (require('./lib/aggregator'))(require('socket.io')(http))
 
 app.get('/coin', (req, res) => res.sendFile(__dirname + '/public/index.html'));
 
-http.listen(26003, () => log.info('listening on 26003'));
+http.listen(26002, () => log.info('listening on 26002'));
